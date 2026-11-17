@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MemoryNode", menuName = "Scriptable Objects/MemoryNode")]
@@ -8,6 +9,10 @@ public class MemoryNode : ScriptableObject
         Memory,
         Choice
     }
+
+    public Action<MemoryNodeKey> OnDropKey;
+    public Action<MemoryNode> OnCompletedNode;
+    
     [SerializeField] private LevelData levelData;
     
     [SerializeField] private string memoryText;
@@ -21,6 +26,7 @@ public class MemoryNode : ScriptableObject
     [Header("Completion")]
     [SerializeField] private bool isCompleted;
     [SerializeField] private bool opensOnComplete;
+    [SerializeField] private MemoryNodeKey droppedKeyOnComplete;
     
     [Header("Branching")]
     [SerializeField] private bool branches;
@@ -38,6 +44,7 @@ public class MemoryNode : ScriptableObject
     public MemoryNodeKey KeyToUnlock => keyToUnlock;
     public bool IsCompleted => isCompleted;
     public bool OpensOnComplete => opensOnComplete;
+    public MemoryNodeKey DroppedKeyOnComplete => droppedKeyOnComplete;
     public bool Branches => branches;
     public MemoryNode[] BranchedMemoryNodes => branchedMemoryNodes;
     public bool IsEndNode => isEndNode;
@@ -56,6 +63,10 @@ public class MemoryNode : ScriptableObject
     
     public void CompleteNode()
     {
+        if (opensOnComplete)
+            OnDropKey?.Invoke(droppedKeyOnComplete);
+        
         isCompleted = true;
+        OnCompletedNode?.Invoke(this);
     }
 }

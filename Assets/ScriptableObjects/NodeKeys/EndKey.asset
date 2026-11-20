@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d643302e6550fc4ca177217c2d4b39e, type: 3}
   m_Name: EndKey
   m_EditorClassIdentifier: Assembly-CSharp::MemoryNodeKey
-  nodeToUnlock: {fileID: 0}
+  nodeToUnlock: {fileID: 11400000, guid: b50712f884d221b42b16cb968e118de4, type: 2}

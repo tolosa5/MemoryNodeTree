@@ -6,55 +6,40 @@ public class MemoryNode : ScriptableObject
 {
     public enum NodeType
     {
-        Memory,
+        Memory, 
         Choice
     }
 
-    public Action<MemoryNodeKey> OnDropKey;
+    public Action<MemoryFact> OnDropKey;
     public Action<MemoryNode> OnCompletedNode;
     
-    [SerializeField] private LevelData levelData;
-    
-    [SerializeField] private string memoryText;
+    [SerializeField] private string id = Guid.NewGuid().ToString();
     [SerializeField] private NodeType nodeType;
     
     [Header("Locking")]
     [SerializeField] private bool isLocked;
     [SerializeField] private bool needsKey;
-    [SerializeField] private MemoryNodeKey keyToUnlock;
+    [SerializeField] private MemoryFact factToUnlock;
     
     [Header("Completion")]
     [SerializeField] private bool isCompleted;
     [SerializeField] private bool opensOnComplete;
-    [SerializeField] private MemoryNodeKey droppedKeyOnComplete;
+    [SerializeField] private MemoryFact providedFactOnComplete;
     
-    [Header("Branching")]
-    [SerializeField] private bool branches;
-    [SerializeField] private MemoryNode[] branchedMemoryNodes;
-    
-    [Header("Next Node")]
-    [SerializeField] private bool isEndNode;
-    [SerializeField] private MemoryNode nextMemoryNode;
-
-    public LevelData LevelData => levelData;
-    public string MemoryText => memoryText;
+    public string Id => id;
     public NodeType ThisNodeType => nodeType;
     public bool IsLocked => isLocked;
     public bool NeedsKey => needsKey;
-    public MemoryNodeKey KeyToUnlock => keyToUnlock;
+    public MemoryFact FactToUnlock => factToUnlock;
     public bool IsCompleted => isCompleted;
     public bool OpensOnComplete => opensOnComplete;
-    public MemoryNodeKey DroppedKeyOnComplete => droppedKeyOnComplete;
-    public bool Branches => branches;
-    public MemoryNode[] BranchedMemoryNodes => branchedMemoryNodes;
-    public bool IsEndNode => isEndNode;
-    public MemoryNode NextMemoryNode => nextMemoryNode;
+    public MemoryFact ProvidedFactOnComplete => providedFactOnComplete;
 
-    public void UnlockNode(MemoryNodeKey key)
+    public void UnlockNode(MemoryFact key)
     {
         if (needsKey)
         {
-            if (key != keyToUnlock)
+            if (key != factToUnlock)
                 return;
         }
         
@@ -64,9 +49,19 @@ public class MemoryNode : ScriptableObject
     public void CompleteNode()
     {
         if (opensOnComplete)
-            OnDropKey?.Invoke(droppedKeyOnComplete);
+            OnDropKey?.Invoke(providedFactOnComplete);
         
         isCompleted = true;
         OnCompletedNode?.Invoke(this);
     }
+}
+
+[Serializable]
+public class MemoryEdge
+{
+    public string Id = Guid.NewGuid().ToString();
+    public MemoryNode FromNode;
+    public MemoryNode ToNode;
+    public string ChoiceLabel;
+    public string LockedHint;
 }

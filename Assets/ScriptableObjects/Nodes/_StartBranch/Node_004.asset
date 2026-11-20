@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92b08016bd383604fa322743ce885c62, type: 3}
   m_Name: Node_004
   m_EditorClassIdentifier: Assembly-CSharp::MemoryNode
+  levelData: {fileID: 0}
   memoryText: 
   nodeType: 0
   isLocked: 1
@@ -19,9 +20,10 @@ MonoBehaviour:
   keyToUnlock: {fileID: 0}
   isCompleted: 0
   opensOnComplete: 0
+  droppedKeyOnComplete: {fileID: 0}
   branches: 1
   branchedMemoryNodes:
   - {fileID: 11400000, guid: 2ee7fb4614d29a24ea0695d6b0affe0c, type: 2}
   - {fileID: 11400000, guid: 23206202151ac804a9c302c61f4ba3e2, type: 2}
-  isEndNode: 0
+  isEndNode: 1
   nextMemoryNode: {fileID: 0}

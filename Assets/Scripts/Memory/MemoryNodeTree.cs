@@ -1,36 +1,25 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class MemoryRun 
+{
+    public string currentNodeId;
+    public List<MemoryFact> pendingFacts = new();
+}
+
 public class MemoryNodeTree : MonoBehaviour
 {
-    private MemoryNode currentNode;
-    private MemoryNode[] memoryNodes;
-    private List<MemoryNode> unlockedMemoryNodes = new List<MemoryNode>();
+    public string StartNodeId;
+    [SerializeField] List<MemoryNode> nodes = new();
+    [SerializeField] List<MemoryEdge> edges = new();
     
-    private List<MemoryNodeKey> collectedKeys = new List<MemoryNodeKey>();
+    Dictionary<string, MemoryNode> nodeById;
+    Dictionary<string, List<MemoryEdge>> outgoing, incoming;
+    Dictionary<string, List<MemoryEdge>> edgesByFact;
+    private List<MemoryFact> confirmedFacts = new();
 
-    private void Start()
-    {
-        foreach (MemoryNode memoryNode in memoryNodes)
-        {
-            memoryNode.OnDropKey += CollectKey;
-            memoryNode.OnCompletedNode += NodeCompleted;
-        }
-    }
-    
-    private void CollectKey(MemoryNodeKey key)
-    {
-        if (!collectedKeys.Contains(key))
-            collectedKeys.Add(key);
-    }
-    
-    private void NodeCompleted(MemoryNode node)
-    {
-        unlockedMemoryNodes.Add(node);
-        if (node.IsEndNode)
-            return;
-        
-        currentNode = node.NextMemoryNode;
-    }
+    public List<MemoryEdge> GetOutgoing(string nodeId) => outgoing[nodeId];
+    public List<MemoryEdge> GetIncoming(string nodeId) => incoming[nodeId];
+    public bool IsBranching(string nodeId) => outgoing[nodeId].Count > 1;
+    public bool IsEnding(string nodeId) => outgoing[nodeId].Count == 0;
 }

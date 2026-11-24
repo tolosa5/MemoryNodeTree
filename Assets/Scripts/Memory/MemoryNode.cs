@@ -17,6 +17,7 @@ public class MemoryNode : ScriptableObject
     [SerializeField] private NodeType nodeType;
     
     [Header("Locking")]
+    //si un nodo esta bloqueado, no se puede acceder a el ni ver el iconito hasta que se desbloquee
     [SerializeField] private bool isLocked;
     
     [Header("Completion")]
@@ -36,6 +37,7 @@ public class MemoryNode : ScriptableObject
         isLocked = false;
     }
     
+    //aun por decidir desde donde se llama a esta funcion, quiza que escuche evento desde run
     public void CompleteNode()
     {
         if (givesFactOnComplete)
@@ -52,7 +54,9 @@ public class MemoryEdge
     public string Id = Guid.NewGuid().ToString();
     public MemoryNode FromNode;
     public MemoryNode ToNode;
+    //si esta bloqueado porque necesites conocer algo de otra rama temporal
     public MemoryFact RequiredFact;
+    public RunDecisions BranchDecision;
     public string ChoiceLabel;
     public string LockedHint;
 }

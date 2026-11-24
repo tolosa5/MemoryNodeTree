@@ -1,49 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class MemoryRun 
-{
-    public string currentNodeId;
-    public List<MemoryFact> pendingFacts = new();
-    
-    public Action<string> OnCompletedNode;
-    public Action<MemoryRun> OnCompletedRun;
-    
-    public void AddFact(MemoryFact fact)
-    {
-        pendingFacts.Add(fact);
-    }
-
-    public void NodeCompleted()
-    {
-        OnCompletedNode?.Invoke(currentNodeId);
-        ProgressToNode(GetNextNodeId());
-    }
-    
-    public string GetNextNodeId()
-    {
-        foreach (var edge in MemoryNodeTree.Instance.GetOutgoing(currentNodeId))
-        {
-            if (edge.RequiredFact == null || MemoryNodeTree.Instance.GetConfirmedFacts().Contains(edge.RequiredFact))
-            {
-                return edge.ToNode.Id;
-            }
-        }
-
-        return null;
-    }
-    
-    private void ProgressToNode(string nodeId)
-    {
-        currentNodeId = nodeId;
-    }
-
-    public void CompleteRun()
-    {
-        OnCompletedRun?.Invoke(this);
-    }
-}
 
 public class MemoryNodeTree : MonoBehaviour
 {
@@ -91,6 +47,7 @@ public class MemoryNodeTree : MonoBehaviour
 
         foreach (var edge in edges)
         {
+            //esto aun no contempla el caso de que un nodo tenga multiples edges salientes o entrantes
             if (!outgoing.ContainsKey(edge.FromNode.Id))
             {
                 outgoing[edge.FromNode.Id] = new List<MemoryEdge>();
@@ -103,6 +60,7 @@ public class MemoryNodeTree : MonoBehaviour
                 incoming[edge.FromNode.Id].Add(edge);
             }
 
+            
             if (edge.RequiredFact != null)
             {
                 if (!edgesByFact.ContainsKey(edge.RequiredFact.Id))

@@ -4,16 +4,17 @@ using UnityEngine;
 public class MemoryNodeTree : MonoBehaviour
 {
     public static MemoryNodeTree Instance { get; private set; }
-    
+    [SerializeField] private GameEventBus eventBus;
     public string StartNodeId;
-    [SerializeField] List<MemoryNode> nodes = new();
-    [SerializeField] List<MemoryEdge> edges = new();
+    [SerializeField] private List<MemoryNode> nodes = new();
+    [SerializeField] private List<MemoryEdge> edges = new();
     
-    Dictionary<string, MemoryNode> nodeById;
-    Dictionary<string, List<MemoryEdge>> outgoing, incoming;
-    Dictionary<string, List<MemoryEdge>> edgesByFact;
+    private Dictionary<string, MemoryNode> nodeById;
+    private Dictionary<string, List<MemoryEdge>> outgoing, incoming;
+    private Dictionary<string, List<MemoryEdge>> edgesByFact;
     private List<MemoryFact> confirmedFacts = new();
 
+    public MemoryNode GetNodeById(string nodeId) => nodeById[nodeId];
     public List<MemoryEdge> GetOutgoing(string nodeId) => outgoing[nodeId];
     public List<MemoryEdge> GetIncoming(string nodeId) => incoming[nodeId];
     public List<MemoryFact> GetConfirmedFacts() => confirmedFacts;
@@ -70,5 +71,10 @@ public class MemoryNodeTree : MonoBehaviour
                 }
             }
         }
+    }
+    
+    private void StartNewRun()
+    {
+        MemoryRun newRun = new MemoryRun(StartNodeId, eventBus);
     }
 }
